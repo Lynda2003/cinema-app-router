@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function StarRating({ note }) {
   return (
@@ -17,11 +17,18 @@ function StarRating({ note }) {
 }
 
 function MovieCard({ film, onSupprimer }) {
-  const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className="movie-card">
-      <div className="movie-card__poster-wrapper">
+      <div
+        className="movie-card__poster-wrapper"
+        onClick={() => navigate(`/film/${film.id}`)}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => e.key === "Enter" && navigate(`/film/${film.id}`)}
+        aria-label={`Voir les détails de ${film.titre}`}
+      >
         <img
           src={film.posterURL}
           alt={`Affiche de ${film.titre}`}
@@ -32,23 +39,19 @@ function MovieCard({ film, onSupprimer }) {
           }}
         />
         <div className="movie-card__overlay">
-          <button
-            className="btn btn--detail"
-            onClick={() => setExpanded((prev) => !prev)}
-          >
-            {expanded ? "Masquer" : "Voir détails"}
-          </button>
+          <span className="movie-card__overlay-text">▶ Voir le film</span>
         </div>
       </div>
 
       <div className="movie-card__body">
-        <h3 className="movie-card__titre">{film.titre}</h3>
+        <h3
+          className="movie-card__titre"
+          onClick={() => navigate(`/film/${film.id}`)}
+          style={{ cursor: "pointer" }}
+        >
+          {film.titre}
+        </h3>
         <StarRating note={film.note} />
-
-        {expanded && (
-          <p className="movie-card__description">{film.description}</p>
-        )}
-
         <button
           className="btn btn--supprimer"
           onClick={() => onSupprimer(film.id)}
